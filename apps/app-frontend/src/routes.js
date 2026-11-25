@@ -36,6 +36,11 @@ export default new createRouter({
 			component: () => import('@/pages/Screenshots.vue'),
 		},
 		{
+			path: '/clients',
+			name: 'Clients',
+			component: () => import('@/pages/Clients.vue'),
+		},
+		{
 			path: '/user/:user/:projectType?',
 			name: 'User',
 			component: () => import('@/pages/User.vue'),

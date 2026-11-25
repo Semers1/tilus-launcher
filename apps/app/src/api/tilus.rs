@@ -9,6 +9,11 @@ pub fn init<R: tauri::Runtime>() -> TauriPlugin<R> {
             prefer_high_performance_gpu,
             set_instance_game_options,
             get_instance_game_options,
+            crate::api::tilus_clients::tilus_external_scan,
+            crate::api::tilus_clients::tilus_external_install,
+            crate::api::tilus_clients::tilus_external_launch,
+            crate::api::tilus_clients::tilus_dotminecraft_info,
+            crate::api::tilus_clients::tilus_import_dotminecraft,
         ])
         .build()
 }

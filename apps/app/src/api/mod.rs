@@ -18,6 +18,7 @@ pub mod settings;
 pub mod shortcuts;
 pub mod tags;
 pub mod tilus;
+pub mod tilus_clients;
 mod thumbnails;
 pub mod users;
 pub mod utils;

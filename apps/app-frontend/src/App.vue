@@ -13,6 +13,7 @@ import {
 	SettingsIcon,
 	ShirtIcon,
 	SpinnerIcon,
+	TagCategorySwordsIcon,
 	ToggleRightIcon,
 	UserIcon,
 	UserPlusIcon,
@@ -569,6 +570,10 @@ const messages = defineMessages({
 	screenshots: {
 		id: 'app.nav.screenshots',
 		defaultMessage: 'Screenshots',
+	},
+	clients: {
+		id: 'tilus.nav.clients',
+		defaultMessage: 'Clients',
 	},
 	createNewInstance: {
 		id: 'app.nav.create-new-instance',
@@ -2010,6 +2015,9 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 				to="/skins"
 			>
 				<ShirtIcon />
+			</NavButton>
+			<NavButton v-tooltip.right="formatMessage(messages.clients)" to="/clients">
+				<TagCategorySwordsIcon />
 			</NavButton>
 			<NavButton
 				v-if="globalSyncedOptionsQuery.data.value?.screenshots"

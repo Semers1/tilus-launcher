@@ -482,6 +482,11 @@ fn main() {
                         "prefer_high_performance_gpu",
                         "set_instance_game_options",
                         "get_instance_game_options",
+                        "tilus_external_scan",
+                        "tilus_external_install",
+                        "tilus_external_launch",
+                        "tilus_dotminecraft_info",
+                        "tilus_import_dotminecraft",
                     ])
                     .default_permission(
                         DefaultPermissionRule::AllowAllCommands,
