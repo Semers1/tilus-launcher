@@ -1,0 +1,207 @@
+// Tilus Launcher colours on top of the Modrinth theme (@modrinth/assets/styles/variables.scss):
+// the brand green becomes the blue of the "wave" TILUS logo. Kept in its own file so upstream merges stay clean.
+// Classes are doubled on purpose: @modrinth/assets imports omorphia.scss again from JS, after this file, so equal
+// specificity would lose to the green.
+
+.light-mode.light-mode,
+.light.light {
+	--color-brand: #2873cc;
+	--color-brand-highlight: rgba(40, 115, 204, 0.25);
+	--color-brand-shadow: rgba(40, 115, 204, 0.7);
+
+	--brand-gradient-bg: linear-gradient(
+		0deg,
+		rgba(40, 115, 204, 0.16) 0%,
+		rgba(91, 180, 245, 0.12) 100%
+	);
+	--brand-gradient-strong-bg: linear-gradient(
+		270deg,
+		rgba(40, 115, 204, 0.16) 0%,
+		rgba(91, 180, 245, 0.12) 100%
+	);
+	--brand-gradient-border: rgba(13, 39, 72, 0.15);
+	--brand-gradient-fade-out-color: linear-gradient(to bottom, rgba(214, 228, 243, 0), #d3e2f2 70%);
+
+	--loading-bar-gradient: linear-gradient(to right, var(--color-brand) 0%, #5bb4f5 100%);
+
+	--splash-tint-top: rgba(185, 222, 255, 0.465);
+	--splash-tint-bottom: rgba(183, 226, 255, 0.563);
+	--splash-overlay: rgba(181, 215, 255, 0.315);
+}
+
+.dark-mode.dark-mode,
+.oled-mode.oled-mode,
+.retro-mode.retro-mode,
+.dark.dark,
+:root[data-theme='dark']:root {
+	--color-brand: #3a93e6;
+	--color-brand-highlight: rgba(58, 147, 230, 0.25);
+	--color-brand-shadow: rgba(58, 147, 230, 0.7);
+	--color-accent-contrast: #ffffff;
+
+	--brand-gradient-bg: linear-gradient(0deg, rgba(13, 39, 72, 0.2) 0%, rgba(40, 115, 204, 0.1) 100%);
+	--brand-gradient-strong-bg: linear-gradient(270deg, #090d14 10%, #121a28 100%);
+	--brand-gradient-border: rgba(155, 205, 255, 0.08);
+	--brand-gradient-fade-out-color: linear-gradient(to bottom, rgba(23, 27, 35, 0), #171b23 80%);
+
+	--loading-bar-gradient: linear-gradient(to right, var(--color-brand) 0%, #7cc6ff 100%);
+
+	--splash-tint-top: rgba(58, 147, 230, 0.2);
+	--splash-tint-bottom: rgba(13, 39, 72, 0.5);
+}
+
+.oled-mode.oled-mode {
+	--brand-gradient-bg: linear-gradient(0deg, rgba(13, 39, 72, 0.15) 0%, rgba(40, 115, 204, 0.1) 100%);
+	--brand-gradient-strong-bg: linear-gradient(
+		270deg,
+		rgba(9, 13, 20, 0.6) 10%,
+		rgba(18, 26, 40, 0.5) 100%
+	);
+}
+
+.retro-mode.retro-mode {
+	--color-brand: #3f78c0;
+	--color-brand-highlight: #1e2f45;
+}
+
+// The TILUS wordmark: plain display letters with water standing in their lower part. The level and the rolling
+// surface are driven by --tilus-water-level and .tilus-mark--moving (see TilusWordmark.vue and the splash).
+
+@property --tilus-water-level {
+	syntax: '<percentage>';
+	inherits: true;
+	initial-value: 44%;
+}
+
+.tilus-mark {
+	--tilus-mark-air-top: #ffffff;
+	--tilus-mark-air-bottom: #d2f0fa;
+	display: inline-block;
+	margin-right: -0.14em;
+	font-family: 'Manrope', var(--font-standard, Inter), sans-serif;
+	font-size: 20px;
+	font-weight: 800;
+	line-height: 1.05;
+	letter-spacing: 0.14em;
+	color: transparent;
+	background-image:
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='6'%3E%3Cpath d='M0 3Q6 0 12 3T24 3V6H0Z' fill='%232bc6dc'/%3E%3Cpath d='M0 3Q6 0 12 3T24 3' fill='none' stroke='%23c8f8ff' stroke-width='1'/%3E%3C/svg%3E"),
+		linear-gradient(to top, #1580a8, #2bc6dc var(--tilus-water-level), transparent var(--tilus-water-level)),
+		linear-gradient(to bottom, var(--tilus-mark-air-top), var(--tilus-mark-air-bottom));
+	background-repeat: repeat-x, no-repeat, no-repeat;
+	background-size:
+		0.6em 0.15em,
+		100% 100%,
+		100% 100%;
+	background-position:
+		left 0 bottom var(--tilus-water-level),
+		0 0,
+		0 0;
+	-webkit-background-clip: text;
+	background-clip: text;
+	filter: drop-shadow(0 2px 10px rgb(43 198 220 / 0.3));
+	transition: --tilus-water-level 0.6s ease;
+	user-select: none;
+}
+
+.light-mode .tilus-mark {
+	--tilus-mark-air-top: #0d2748;
+	--tilus-mark-air-bottom: #1f4f7a;
+}
+
+.tilus-mark--moving {
+	animation: tilus-mark-wave 1.6s linear infinite;
+}
+
+@keyframes tilus-mark-wave {
+	to {
+		background-position:
+			left 0.6em bottom var(--tilus-water-level),
+			0 0,
+			0 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.tilus-mark--moving {
+		animation: none;
+	}
+}
+
+// Glass: the window background is TilusAmbient (blurred icon of the current instance + glows of its colours),
+// the frame and the content panel become translucent over it. Off for the retro theme.
+
+@property --tilus-glow-1 {
+	syntax: '<color>';
+	inherits: true;
+	initial-value: rgb(58 147 230);
+}
+
+@property --tilus-glow-2 {
+	syntax: '<color>';
+	inherits: true;
+	initial-value: rgb(40 115 204);
+}
+
+:root.tilus-glass {
+	--tilus-ambient-base: #0a0d13;
+	--tilus-glass-frame: rgb(9 11 16 / 0.38);
+	--tilus-glass-content: rgb(17 19 25 / 0.8);
+	--brand-gradient-fade-out-color: linear-gradient(to bottom, rgb(17 19 25 / 0), rgb(17 19 25 / 0.9) 80%);
+
+	.app-grid-layout {
+		background-color: var(--tilus-glass-frame);
+	}
+
+	.app-grid-navbar,
+	.app-title-bar,
+	.window-controls {
+		background-color: transparent;
+	}
+
+	.app-contents {
+		background-color: var(--tilus-glass-content);
+	}
+
+	.app-contents::before {
+		border-color: color-mix(in srgb, var(--tilus-glow-1) 30%, transparent);
+		box-shadow: inset 0 0 56px color-mix(in srgb, var(--tilus-glow-1) 10%, transparent);
+	}
+}
+
+:root.tilus-glass.oled-mode {
+	--tilus-ambient-base: #000000;
+	--tilus-glass-frame: rgb(0 0 0 / 0.5);
+	--tilus-glass-content: rgb(0 0 0 / 0.84);
+	--brand-gradient-fade-out-color: linear-gradient(to bottom, rgb(0 0 0 / 0), rgb(0 0 0 / 0.9) 80%);
+}
+
+:root.tilus-glass.light-mode {
+	--tilus-ambient-base: #e6ecf4;
+	--tilus-glass-frame: rgb(255 255 255 / 0.35);
+	--tilus-glass-content: rgb(250 251 253 / 0.86);
+	--tilus-ambient-art-opacity: 0.35;
+	--brand-gradient-fade-out-color: linear-gradient(
+		to bottom,
+		rgb(250 251 253 / 0),
+		rgb(250 251 253 / 0.92) 70%
+	);
+}
+
+// Window glass: Windows draws acrylic (the blurred desktop) behind the window, so the window background and the
+// ambient base let it through. Windows shows a plain colour instead while the window is inactive.
+:root.tilus-window-glass {
+	--tilus-ambient-base: rgb(10 13 19 / 0.62);
+
+	body {
+		background-color: transparent;
+	}
+}
+
+:root.tilus-window-glass.oled-mode {
+	--tilus-ambient-base: rgb(0 0 0 / 0.72);
+}
+
+:root.tilus-window-glass.light-mode {
+	--tilus-ambient-base: rgb(230 236 244 / 0.6);
+}

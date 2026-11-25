@@ -1,0 +1,678 @@
+// The "player" layout of Tilus Launcher (concept A): the current instance as an album cover on the home page,
+// a floating glass rail on the left and a transport bar along the bottom. Built on the glass of tilus.scss.
+
+@font-face {
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500 800;
+	font-display: swap;
+	src: url('../tilus/fonts/manrope-cyrillic-ext.woff2') format('woff2');
+	unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+
+@font-face {
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500 800;
+	font-display: swap;
+	src: url('../tilus/fonts/manrope-cyrillic.woff2') format('woff2');
+	unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face {
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500 800;
+	font-display: swap;
+	src: url('../tilus/fonts/manrope-latin-ext.woff2') format('woff2');
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+		U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500 800;
+	font-display: swap;
+	src: url('../tilus/fonts/manrope-latin.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+		U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+	--tilus-display-font: 'Manrope', var(--font-standard, Inter), sans-serif;
+	--tilus-bar-height: 58px;
+	--tilus-panel: rgb(16 19 26 / 0.62);
+	--tilus-panel-border: rgb(255 255 255 / 0.08);
+	--tilus-chip: rgb(255 255 255 / 0.07);
+	--tilus-chip-hover: rgb(255 255 255 / 0.13);
+}
+
+:root.light-mode {
+	--tilus-panel: rgb(255 255 255 / 0.66);
+	--tilus-panel-border: rgb(15 23 42 / 0.1);
+	--tilus-chip: rgb(15 23 42 / 0.06);
+	--tilus-chip-hover: rgb(15 23 42 / 0.11);
+}
+
+// Shell: the left bar floats as a glass rail and the content panel leaves room for the bottom bar.
+:root.tilus-player {
+	.app-grid-layout,
+	.app-contents {
+		--left-bar-width: 4.6rem;
+	}
+
+	.app-grid-navbar {
+		align-self: stretch;
+		align-items: center;
+		width: 3.5rem;
+		margin: 0 0 calc(var(--tilus-bar-height) + 1.1rem) 0.6rem;
+		padding: 0.5rem 0.35rem;
+		border: 1px solid var(--tilus-panel-border);
+		border-radius: 20px;
+		background-color: var(--tilus-panel);
+	}
+
+	.app-contents {
+		right: 0.6rem;
+		bottom: calc(var(--tilus-bar-height) + 1.1rem);
+		height: auto;
+		border-radius: 20px;
+		overflow: hidden;
+	}
+
+	.app-contents::before {
+		right: 0.6rem;
+		bottom: calc(var(--tilus-bar-height) + 1.1rem);
+		border-radius: 20px;
+	}
+}
+
+:root.tilus-player:not(.tilus-glass-lite) {
+	.app-grid-navbar,
+	.player-bar,
+	.player-server,
+	.player-bar__accounts {
+		backdrop-filter: blur(22px) saturate(1.4);
+	}
+}
+
+// The home page has its own server card and the account lives in the bottom bar.
+:root.tilus-player.tilus-home .app-contents.sidebar-enabled {
+	grid-template-columns: 1fr 0px;
+
+	> :last-child:not(.app-viewport) {
+		display: none;
+	}
+}
+
+.tilus-cover {
+	position: relative;
+	flex: none;
+	overflow: hidden;
+	box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1);
+	transition:
+		transform 0.18s ease,
+		box-shadow 0.3s ease;
+}
+
+.tilus-cover--glow {
+	box-shadow:
+		0 24px 60px color-mix(in srgb, var(--tilus-glow-1) 42%, transparent),
+		inset 0 0 0 1px rgb(255 255 255 / 0.12);
+}
+
+// The instance page header follows the player: a bigger cover with the window glow and a display title.
+.tilus-instance-title.tilus-instance-title {
+	font-family: var(--tilus-display-font);
+	font-size: 34px;
+	font-weight: 800;
+	line-height: 1.1;
+}
+
+.tilus-instance-cover.tilus-instance-cover {
+	border-radius: 18px;
+	box-shadow:
+		0 16px 40px color-mix(in srgb, var(--tilus-glow-1) 38%, transparent),
+		inset 0 0 0 1px rgb(255 255 255 / 0.12);
+}
+
+.player-home {
+	display: flex;
+	flex-direction: column;
+	gap: 28px;
+}
+
+.player-home__top {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 300px;
+	gap: 28px;
+	align-items: start;
+}
+
+.player-home__main {
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+	min-width: 0;
+}
+
+@media (max-width: 1100px) {
+	.player-home__top {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+.player-hero {
+	display: flex;
+	align-items: flex-end;
+	gap: 28px;
+	min-width: 0;
+	padding-top: 8px;
+}
+
+.player-hero__text {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.player-kicker {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--color-secondary);
+}
+
+.player-title {
+	margin: 6px 0 8px;
+	font-family: var(--tilus-display-font);
+	font-size: clamp(30px, 3.6vw, 48px);
+	font-weight: 800;
+	line-height: 1.06;
+	color: var(--color-contrast);
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow-wrap: anywhere;
+}
+
+.player-details {
+	margin: 0;
+	font-size: 14px;
+	color: var(--color-secondary);
+}
+
+.player-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+	margin-top: 20px;
+}
+
+.player-play {
+	display: grid;
+	place-items: center;
+	width: 62px;
+	height: 62px;
+	border: 0;
+	border-radius: 50%;
+	background-color: var(--color-brand);
+	color: var(--color-accent-contrast);
+	box-shadow: 0 10px 30px color-mix(in srgb, var(--color-brand) 55%, transparent);
+	cursor: pointer;
+	transition:
+		transform 0.15s ease,
+		filter 0.15s ease,
+		background-color 0.3s ease;
+
+	svg {
+		width: 26px;
+		height: 26px;
+	}
+
+	&:hover:not(:disabled) {
+		transform: scale(1.06);
+		filter: brightness(1.08);
+	}
+
+	&:active:not(:disabled) {
+		transform: scale(0.96);
+	}
+
+	&:disabled {
+		cursor: default;
+		opacity: 0.6;
+	}
+}
+
+.player-play--stop {
+	background-color: var(--color-red);
+	box-shadow: 0 10px 30px color-mix(in srgb, var(--color-red) 50%, transparent);
+}
+
+.player-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	padding: 8px 13px;
+	border: 1px solid var(--tilus-panel-border);
+	border-radius: 999px;
+	background-color: var(--tilus-chip);
+	color: var(--color-base);
+	font-size: 13px;
+	font-weight: 600;
+	white-space: nowrap;
+	cursor: pointer;
+	transition:
+		background-color 0.15s ease,
+		color 0.15s ease;
+
+	svg {
+		width: 16px;
+		height: 16px;
+	}
+
+	&:hover:not(:disabled) {
+		background-color: var(--tilus-chip-hover);
+		color: var(--color-contrast);
+	}
+
+	&:disabled {
+		cursor: default;
+		opacity: 0.5;
+	}
+}
+
+.player-chip--icon {
+	padding: 8px;
+}
+
+.player-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 10px 16px;
+	border: 0;
+	border-radius: 12px;
+	background-color: var(--color-brand);
+	color: var(--color-accent-contrast);
+	font-size: 14px;
+	font-weight: 700;
+	cursor: pointer;
+	transition:
+		filter 0.15s ease,
+		transform 0.15s ease;
+
+	svg {
+		width: 18px;
+		height: 18px;
+	}
+
+	&:hover:not(:disabled) {
+		filter: brightness(1.08);
+	}
+
+	&:active:not(:disabled) {
+		transform: scale(0.98);
+	}
+
+	&:disabled {
+		cursor: default;
+		opacity: 0.55;
+	}
+}
+
+.player-live-dot {
+	flex: none;
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background-color: var(--color-green);
+	box-shadow: 0 0 10px var(--color-green);
+}
+
+.player-live-dot--off {
+	background-color: var(--color-red);
+	box-shadow: 0 0 10px var(--color-red);
+}
+
+.player-section-title {
+	margin: 0 0 12px;
+	font-family: var(--tilus-display-font);
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--color-contrast);
+}
+
+.player-shelf__row {
+	display: flex;
+	gap: 16px;
+	padding: 6px 4px 10px;
+	margin: -6px -4px 0;
+	overflow-x: auto;
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+.player-shelf__item {
+	display: flex;
+	flex: none;
+	flex-direction: column;
+	gap: 6px;
+	width: 112px;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: inherit;
+	text-align: left;
+	cursor: pointer;
+
+	&:hover .tilus-cover,
+	&:hover .player-shelf__plus {
+		transform: translateY(-3px);
+	}
+
+	&:focus-visible {
+		outline: none;
+
+		.tilus-cover,
+		.player-shelf__plus {
+			outline: 2px solid var(--color-contrast);
+			outline-offset: 3px;
+		}
+	}
+}
+
+.player-shelf__item--current .tilus-cover {
+	outline: 2px solid var(--color-brand);
+	outline-offset: 3px;
+}
+
+.player-shelf__name {
+	margin-top: 4px;
+	overflow: hidden;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--color-contrast);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.player-shelf__meta {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	color: var(--color-secondary);
+}
+
+.player-shelf__plus {
+	display: grid;
+	place-items: center;
+	width: 112px;
+	height: 112px;
+	border: 1.5px dashed color-mix(in srgb, var(--color-contrast) 30%, transparent);
+	border-radius: 14px;
+	color: var(--color-secondary);
+	transition: transform 0.18s ease;
+
+	svg {
+		width: 28px;
+		height: 28px;
+	}
+}
+
+.player-server {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	padding: 18px;
+	border: 1px solid var(--tilus-panel-border);
+	border-radius: 20px;
+	background-color: var(--tilus-panel);
+}
+
+.player-server__head {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 13px;
+	color: var(--color-secondary);
+}
+
+.player-server__favicon {
+	width: 22px;
+	height: 22px;
+	margin-left: auto;
+	border-radius: 5px;
+	image-rendering: pixelated;
+}
+
+.player-server__count {
+	font-family: var(--tilus-display-font);
+	font-size: 44px;
+	font-weight: 800;
+	line-height: 1;
+	color: var(--color-contrast);
+
+	small {
+		font-family: var(--font-standard, Inter), sans-serif;
+		font-size: 15px;
+		font-weight: 600;
+		color: var(--color-secondary);
+	}
+}
+
+.player-server__offline {
+	margin: 0;
+	color: var(--color-secondary);
+}
+
+.player-server__motd {
+	font-size: 13px;
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+}
+
+.player-server__actions {
+	display: flex;
+	gap: 8px;
+
+	.player-button {
+		flex: 1;
+	}
+}
+
+.player-server__foot {
+	overflow: hidden;
+	font-size: 12px;
+	color: var(--color-secondary);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.player-library .player-section-title {
+	margin-bottom: 4px;
+}
+
+.player-bar {
+	position: fixed;
+	right: 0.6rem;
+	bottom: 0.6rem;
+	left: 0.6rem;
+	z-index: 20;
+	display: grid;
+	grid-template-columns: minmax(200px, 300px) minmax(0, 1fr) auto;
+	align-items: center;
+	gap: 18px;
+	height: var(--tilus-bar-height);
+	padding: 0 12px 0 10px;
+	border: 1px solid var(--tilus-panel-border);
+	border-radius: 18px;
+	background-color: var(--tilus-panel);
+}
+
+.player-bar__now {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	min-width: 0;
+}
+
+.player-bar__text {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.player-bar__name {
+	overflow: hidden;
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--color-contrast);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.player-bar__status {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	color: var(--color-secondary);
+	white-space: nowrap;
+}
+
+.player-bar__track {
+	position: relative;
+	height: 6px;
+	overflow: hidden;
+	border-radius: 3px;
+	background-color: var(--tilus-chip);
+	opacity: 0.45;
+	transition: opacity 0.3s ease;
+}
+
+.player-bar__track--active,
+.player-bar__track--playing {
+	opacity: 1;
+}
+
+.player-bar__fill {
+	height: 100%;
+	border-radius: inherit;
+	background: linear-gradient(
+		90deg,
+		var(--color-brand),
+		color-mix(in srgb, var(--color-brand) 45%, white)
+	);
+	opacity: 0;
+	transition:
+		width 0.4s ease,
+		opacity 0.3s ease;
+}
+
+.player-bar__track--active .player-bar__fill {
+	opacity: 1;
+}
+
+// While a game runs the full bar holds a slow wave; it only moves a transform, so it stays on the compositor.
+.player-bar__track--playing {
+	.player-bar__fill {
+		opacity: 0.35;
+	}
+
+	&::after {
+		content: '';
+		position: absolute;
+		inset: 0 auto 0 0;
+		width: 40%;
+		background: linear-gradient(
+			90deg,
+			transparent,
+			color-mix(in srgb, var(--color-brand) 80%, white),
+			transparent
+		);
+		animation: player-wave 3.2s ease-in-out infinite;
+		will-change: transform;
+	}
+}
+
+@keyframes player-wave {
+	from {
+		transform: translateX(-100%);
+	}
+	to {
+		transform: translateX(260%);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.player-bar__track--playing::after {
+		animation: none;
+	}
+}
+
+.player-bar__account-wrap {
+	position: relative;
+}
+
+.player-bar__account {
+	padding: 5px 10px 5px 6px;
+
+	.avatar {
+		border-radius: 6px;
+	}
+}
+
+.player-bar__badge {
+	padding: 1px 6px;
+	border-radius: 6px;
+	background-color: var(--tilus-chip-hover);
+	font-size: 11px;
+	font-weight: 600;
+	color: var(--color-secondary);
+}
+
+.player-bar__chevron {
+	transition: transform 0.2s ease;
+}
+
+.player-bar__accounts {
+	position: absolute;
+	right: 0;
+	bottom: calc(100% + 12px);
+	z-index: 30;
+	width: 300px;
+	max-height: 70vh;
+	padding: 4px 10px 10px;
+	overflow: auto;
+	border: 1px solid var(--tilus-panel-border);
+	border-radius: 18px;
+	background-color: var(--tilus-panel);
+	box-shadow: 0 20px 50px rgb(0 0 0 / 0.35);
+}
+
+.player-pop-enter-active,
+.player-pop-leave-active {
+	transition:
+		opacity 0.15s ease,
+		transform 0.15s ease;
+}
+
+.player-pop-enter-from,
+.player-pop-leave-to {
+	opacity: 0;
+	transform: translateY(6px);
+}
